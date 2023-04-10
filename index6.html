@@ -74,7 +74,7 @@
 map.addLayer(baseLayers['OpenStreetMap']); //OSMを初期表示
 
 // レイヤー切り替えコントロール
-const LayersControl = L.LayerControl
+const LayersControl = L.Control
 .Layers(baseLayers, [], { collapsed: false })
 .addTo(map);
 
