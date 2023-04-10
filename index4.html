@@ -54,8 +54,11 @@
         const markers = L.markerClusterGroup()
           .bindPopup(
             (layer) => layer.feature.properties.P29_004) // ポップアップで学校名を表示
-          .addTo(map) // 地図に追加
-      })
+          .addTo(map);
+        
+          L.geoJSON(json).addTo(markers); // クラスタリングレイヤーにGeoJSONデータをセット
+
+      });
 
 
   </script>
