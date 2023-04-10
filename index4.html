@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>sample3</title>
+  <!-- LeafletのCSS読み込み -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+  <!-- LeafletのJavascript読み込み -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
+</head>
+<body>
+  <h2>地図上にもっと多くのピンを立てる</h2>
+  <!-- 地図を表示するdiv要素を宣言-->
+  <div id="map" style="height: 80vh;"></div>
+
+
+
+
+  <script>
+    // 地図インスタンスを初期化 (=div要素に地図描画が埋め込まれる)
+    const map = L.map('map', {
+      center: [36.5, 137.1], // 初期表示の地図中心の経緯度
+      zoom: 5, // 初期ズームレベル
+    });
+    
+    // 背景レイヤーインスタンスを初期化
+    const backgroundLayer = L.tileLayer(
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
+      {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contoributors',
+      },
+    );
+
+    // 地図インスタンスへのレイヤーを追加
+    map.addLayer(backgroundLayer);
+
+    // ピン定義
+    const marker = L.marker([33, 129.5]); // ピン=Markerを初期化
+    marker.bindPopup('平面直角座標1系原点'); // ポップアップを紐づけ
+    map.addLayer(marker); // ピンを地図上に追加
+
+    // GeoJSONレイヤーを作成
+    fetch('./P29-21.geojson') // 群馬県の学校データのGeoJSONを非同期読み込み
+      .then((res) => res.json())
+      .then((json) => {
+        // GeoJSONレイヤーを作成
+        L.geoJSON(json)
+          .bindPopup((layer) => layer.feature.properties.P29_004) // ポップアップで学校名を表示
+          .addTo(map) // 地図に追加
+      })
+
+
+  </script>
+</body>
+</html>
