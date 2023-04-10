@@ -13,6 +13,10 @@
   <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
     integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
     crossorigin=""></script>
+  <!-- Leaflet.markerclusterを読み込み -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/" />
+
 </head>
 <body>
   <h2>地図上にもっと多くのピンを立てる</h2>
@@ -41,18 +45,14 @@
     // 地図インスタンスへのレイヤーを追加
     map.addLayer(backgroundLayer);
 
-    // ピン定義
-    const marker = L.marker([33, 129.5]); // ピン=Markerを初期化
-    marker.bindPopup('平面直角座標1系原点'); // ポップアップを紐づけ
-    map.addLayer(marker); // ピンを地図上に追加
-
     // GeoJSONレイヤーを作成
-    fetch('./P29-21.geojson') // 群馬県の学校データのGeoJSONを非同期読み込み
+    fetch('./P29-21.geojson') // 全国分の学校データ（５万件）のGeoJSONを非同期読み込み
       .then((res) => res.json())
       .then((json) => {
-        // GeoJSONレイヤーを作成
-        L.geoJSON(json)
-          .bindPopup((layer) => layer.feature.properties.P29_004) // ポップアップで学校名を表示
+        // クラスタリングレイヤーを作成し地図に追加
+        const markers = L.markerClusterGroup()
+          .bindPopup(
+            (layer) => layer.feature.properties.P29_004) // ポップアップで学校名を表示
           .addTo(map) // 地図に追加
       })
 
