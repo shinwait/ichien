@@ -5,26 +5,41 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>sample1</title>
+  <!-- LeafletのCSS読み込み -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
      crossorigin=""/>
-  <!-- Make sure you put this AFTER Leaflet's CSS -->
- <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
- integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
- crossorigin=""></script>
+  <!-- LeafletのJavascript読み込み -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
 </head>
 <body>
   <h2>sample1</h2>
+  <!-- 地図を表示するdiv要素を宣言-->
   <div id="map" style="width:80vh"></div>
 
 
-  <script>
-    var map = L.map('map').setView([51.505, -0.09], 13);
 
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    maxZoom: 19,
-    attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-}).addTo(map);
+
+  <script>
+    // 地図インスタンスを初期化 (=div要素に地図描画が埋め込まれる)
+    const map = L.map('map', {
+      center: [36.5, 137.1], // 初期表示の地図中心の経緯度
+      zoom: 5, // 初期ズームレベル
+    });
+    
+    // 背景レイヤーインスタンスを初期化
+    const backgroundLayer = L.tileLayer(
+      'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMのURLテンプレート
+      {
+        maxZoom: 19,
+        attribution: '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contoributors',
+      },
+    );
+
+    // 地図インスタンスへのレイヤーを追加
+    map.addLayer(backgroundLayer);
   </script>
 </body>
 </html>
