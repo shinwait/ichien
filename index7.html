@@ -1,12 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ja">
 <head>
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sample7</title>
+  <title>sample6</title>
+  <!-- LeafletのCSS読み込み -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
+     integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
+     crossorigin=""/>
+  <!-- LeafletのJavascript読み込み -->
+  <script src="https://unpkg.com/leaflet@1.9.3/dist/leaflet.js"
+    integrity="sha256-WBkoXOwTeyKclOHuWtc+i2uENFpDZ9YPdf5Hf+D7ewM="
+    crossorigin=""></script>
+  <!-- Leaflet.markerclusterを読み込み -->
+  <script src="https://unpkg.com/leaflet.markercluster@1.4.1/dist/leaflet.markercluster.js"></script>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.Default.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.4.1/dist/MarkerCluster.css" />
+
 </head>
 <body>
-  <h2>Git TEST1</h2>
+  <h2>地図上に多くの図形を表示する</h2>
+  <!-- 地図を表示するdiv要素を宣言-->
+  <div id="map" style="height: 80vh;"></div>
+
+
+
+
+  <script>
+    // 地図インスタンスを初期化 (=div要素に地図描画が埋め込まれる)
+    const map = L.map('map', {
+      center: [35.3627808, 138.7307908], // 初期表示の地図中心の経緯度
+      zoom: 14, // 初期ズームレベル
+    });
+    
+    // 背景レイヤーインスタンスを初期化
+    const backgroundLayer = L.tileLayer(
+      'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg', // 地理院タイル空中写真
+      {
+        maxZoom: 17,
+        attribution: '<a href="https://maps.gsi.go.jp/development/ishiran.html">地理院タイル</a>',
+      },
+    );
+
+    // 地図インスタンスへのレイヤーを追加
+    map.addLayer(backgroundLayer);
+
+    
+    // 背景地図データ
+    const baseLayers = {
+      OpenStreetMap: L.tileLayer(
+        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        {
+          maxZoom: 19,
+          attribution: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+        },
+      ),
+      地理院地図: L.tileLayer(
+        'https://cyberjapandata.gsi.go.jp/xyz/std/{z}/{x}/{y}.png',
+        {
+          maxZoom: 18,
+          attribution: '<a href="https://maps.gsi.go.jp/development/ishiran.html">地理院タイル</a>',
+        },
+      ),
+      空中写真: L.tileLayer(
+        'https://cyberjapandata.gsi.go.jp/xyz/seamlessphoto/{z}/{x}/{y}.jpg',
+        {
+          maxZoom: 17,
+          attribution: '<a href="https://maps.gsi.go.jp/development/ishiran.html">地理院タイル</a>',
+        }, 
+      ),
+    };
+map.addLayer(baseLayers['OpenStreetMap']); //OSMを初期表示
+
+// レイヤー切り替えコントロール
+const LayersControl = L.control
+.layers(baseLayers, [], { collapsed: false })
+.addTo(map);
+
+    // GeoJSONレイヤーを作成
+    fetch('./A16-15_00_DID.geojson') // 人口集中地区データのGeoJSONを非同期読み込み
+      .then((res) => res.json())
+      .then((json) => {
+        // GeoJSONレイヤーを作成
+        const polygon = L.geoJSON(json, {
+          style: (feature) => ({
+            color: 'red',
+            stroke: false,
+            // 人口を面積で割った値でポリゴンの濃さを変える
+            fillOpacity:
+              feature.properties['人口'] /
+              feature.properties['面積'] /
+              20000,
+          }),
+        })
+
+        //ポップアップで人口を表示
+          .bindPopup(
+            (layer) => '人口: ' + layer.feature.properties['人口'],)
+          .addTo(map);
+
+        // レイヤ一覧に追加
+        
+          LayersControl.addOverlay(polygon, '人口集中地区');
+
+      });
+  </script>
 </body>
 </html>
