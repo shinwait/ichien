@@ -124,7 +124,7 @@ const weightDict = {
   5: 4,
 };
 
-　　fetch('./N02-21_RailroadSection.geojson') // 鉄道データのGeoJSONを非同期読み込み
+    fetch('./N02-21_RailroadSection.geojson') // 鉄道データのGeoJSONを非同期読み込み
       .then((res) => res.json())
       .then((json) => {
         // GeoJSONレイヤーを作成
@@ -132,7 +132,6 @@ const weightDict = {
           style: (feature) => ({
             weight: weightDict[feature.properties.N02_002], // 事業者種別コードから線の太さを得る
             color: colorDict[feature.properties.N02_002], // 事業者種別コードから線の色を得る
-            stroke: false,
           }),
         })
 
