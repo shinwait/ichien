@@ -131,7 +131,7 @@ const weightDict = {
         const line = L.geoJSON(json, {
           style: (feature) => ({
             weight: weightDict[feature.properties.N02_002], // 事業者種別コードから線の太さを得る
-            color: weightDict[feature.properties.N02_002], // 事業者種別コードから線の色を得る
+            color: colorDict[feature.properties.N02_002], // 事業者種別コードから線の色を得る
             stroke: false,
           }),
         })
