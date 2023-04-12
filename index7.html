@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>sample6</title>
+  <title>sample7</title>
   <!-- LeafletのCSS読み込み -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.3/dist/leaflet.css"
      integrity="sha256-kLaT2GOSpHechhsozzB+flnD+zUyjE2LlfWPgU04xyI="
@@ -103,6 +103,50 @@ const LayersControl = L.control
         // レイヤ一覧に追加
         
           LayersControl.addOverlay(polygon, '人口集中地区');
+
+      });
+
+// 事業者種別コード別に色を塗分ける
+const colorDict = {
+  1: 'green',
+  2: 'blue',
+  3: 'red',
+  4: 'orenge',
+  5: 'purple',
+};
+
+// 事業者種別コード別に線の太さを書き分ける
+const weightDict = {
+  1: 10,
+  2: 7,
+  3: 4,
+  4: 4,
+  5: 4,
+};
+
+　　fetch('./N02-21_RailroadSection.geojson') // 鉄道データのGeoJSONを非同期読み込み
+      .then((res) => res.json())
+      .then((json) => {
+        // GeoJSONレイヤーを作成
+        const polygon = L.geoJSON(json, {
+          style: (feature) => ({
+            weight: weightDict[feature.properties.N02_002], // 事業者種別コードから線の太さを得る
+            color: weightDict[feature.properties.N02_002], // 事業者種別コードから線の色を得る
+            stroke: false,
+          }),
+        })
+
+        //ポップアップで事業者名と路線名を表示
+        .bindPopup(
+          (layer) => layer.feature.properties.N02_004 +
+                     '<br />' + 
+                     layer.feature.properties.N02_003,
+        )
+        .addTo(map);
+
+        // レイヤ一覧に追加
+        
+        LayersControl.addOverlay(line, '鉄道データ');
 
       });
   </script>
